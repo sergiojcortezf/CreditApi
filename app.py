@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, render_template, g
+from flask import Flask, render_template, g, jsonify
 
 # --Configuration
 app = Flask(__name__)
@@ -12,6 +12,7 @@ def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
+        db.row_factory = sqlite3.Row  # To return rows as dictionaries
     return db
 
 
@@ -43,6 +44,14 @@ def init_db_command():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# API route to get all credits
+@app.route('/api/creditos', methods=['GET'])
+def get_creditos():
+    db = get_db()
+    cursor = db.execute('SELECT * FROM creditos ORDER BY id DESC')
+    lista_creditos = [dict(row) for row in cursor.fetchall()]
+    return jsonify(lista_creditos)
 
 # Run the app
 if __name__ == '__main__':
