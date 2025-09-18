@@ -1,9 +1,11 @@
 import sqlite3
 from flask import Flask, render_template, g, jsonify, request
 
+
 # -- CONFIGURACION --
 app = Flask(__name__)
 DATABASE = 'instance/creditos.db' # Ruta a la base de datos SQLite
+
 
 # --CONEXION A LA DB--
 
@@ -23,6 +25,7 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
+
 # -- INICIALIZAR LA DB --
 
 # Inicializar la base de datos con el esquema
@@ -39,6 +42,7 @@ def init_db_command():
     """Initialize the database."""
     init_db()
     print('Initialized the database.')
+
 
 # -- MANEJADOR DE ERRORES --
 
@@ -57,6 +61,7 @@ def general_error_handler(e):
     # Log para producción:
     # logger.error(f"Error inesperado: {str(e)}")
     return jsonify({'error': 'Ha ocurrido un error inesperado en el servidor.'}), 500
+
 
 # -- RUTAS --
 @app.route('/')
@@ -91,6 +96,14 @@ def add_credito():
     db.commit() # Guardar cambios
 
     return jsonify({'id': cursor.lastrowid, 'mensaje': 'Crédito registrado exitosamente'}), 201
+
+# Ruta API para eliminar un crédito por ID
+@app.route('/api/creditos/<int:id>', methods=['DELETE'])
+def delete_credito(id):
+    db = get_db()
+    db.execute ('DELETE FROM creditos WHERE id = ?', (id,))
+    db.commit()
+    return jsonify({'mensaje': f'Crédito con ID {id} eliminado exitosamente'}), 200
 
 # -- EJECUTAR LA APP --
 if __name__ == '__main__':
