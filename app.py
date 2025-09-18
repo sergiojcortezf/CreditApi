@@ -105,6 +105,26 @@ def delete_credito(id):
     db.commit()
     return jsonify({'mensaje': f'Crédito con ID {id} eliminado exitosamente'}), 200
 
+# Ruta API para actualizar un crédito por ID
+@app.route('/api/creditos/<int:id>', methods=['PUT'])
+def update_credito(id):
+    datos_credito = request.get_json()
+
+    cliente = datos_credito['cliente']
+    monto = datos_credito['monto']
+    tasa_interes = datos_credito['tasa_interes']
+    plazo = datos_credito['plazo']
+    fecha_otorgamiento = datos_credito['fecha_otorgamiento']
+
+    db = get_db()
+    db.execute(
+        'UPDATE creditos SET cliente = ?, monto = ?, tasa_interes = ?, plazo = ?, fecha_otorgamiento = ? WHERE id = ?',
+        (cliente, monto, tasa_interes, plazo, fecha_otorgamiento, id)
+    )
+    db.commit()
+
+    return jsonify({'mensaje': f'Crédito con ID {id} actualizado exitosamente'}), 200
+
 # -- EJECUTAR LA APP --
 if __name__ == '__main__':
     app.run(debug=True)
