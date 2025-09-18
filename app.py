@@ -1,11 +1,11 @@
 import sqlite3
 from flask import Flask, render_template, g, jsonify, request
 
-# --Configuracion
+# -- CONFIGURACION --
 app = Flask(__name__)
 DATABASE = 'instance/creditos.db' # Ruta a la base de datos SQLite
 
-# --Conexion a la DB
+# --CONEXION A LA DB--
 
 # Obtener una conexión a la base de datos
 def get_db():
@@ -23,7 +23,7 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-# --Inicializar la DB
+# -- INICIALIZAR LA DB --
 
 # Inicializar la base de datos con el esquema
 def init_db():
@@ -40,7 +40,25 @@ def init_db_command():
     init_db()
     print('Initialized the database.')
 
-# --Rutas
+# -- MANEJADOR DE ERRORES --
+
+# Capturar los errores de tipo KeyError
+@app.errorhandler(KeyError)
+def handle_key_error(e):
+    """Maneja los errores cuando falta una clave en los datos JSON."""
+    mensaje = f"Error: Falta la clave '{e.args[0]}' en los datos proporcionados."
+    return jsonify({'error': mensaje}), 400
+
+# Capturar los errores generales
+@app.errorhandler(Exception)
+def general_error_handler(e):
+    """Maneja errores inesperados en el servidor."""
+    print(f"Error inesperado: {str(e)}")
+    # Log para producción:
+    # logger.error(f"Error inesperado: {str(e)}")
+    return jsonify({'error': 'Ha ocurrido un error inesperado en el servidor.'}), 500
+
+# -- RUTAS --
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -74,6 +92,6 @@ def add_credito():
 
     return jsonify({'id': cursor.lastrowid, 'mensaje': 'Crédito registrado exitosamente'}), 201
 
-# --Ejecutar la app
+# -- EJECUTAR LA APP --
 if __name__ == '__main__':
     app.run(debug=True)
