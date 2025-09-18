@@ -86,8 +86,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // -- FUNCIÓN PARA MANEJAR CLICS EN LOS BOTONES DE ACCIÓN (EDITAR/ELIMINAR) --
+    const handleTableClick = async (event) => {
+        const target = event.target; // Elemento que fue clickeado
+
+        // -- LÓGICA PARA EL BOTÓN DE ELIMINAR --
+        if (target.classList.contains('btn-delete')) {
+            const creditoId = target.dataset.id; // Obtener el ID del crédito a eliminar
+
+            if (confirm(`¿Está seguro de que desea eliminar el crédito con ID ${creditoId}?`)) {
+                try {
+                    const response = await fetch(`${API_URL}/${creditoId}`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) throw new Error('Error al eliminar el crédito');
+
+                    // Recargar la lista de créditos
+                    fetchCreditos();
+                } catch (error) {
+                    console.error('Error al eliminar el crédito:', error);
+                    alert('Error al eliminar el crédito. Por favor, inténtelo de nuevo.');
+                }
+            }
+        }
+    };
+
     // -- ASIGNAR EVENTOS --
     creditosForm.addEventListener('submit', addCredito);
+    creditosTbody.addEventListener('click', handleTableClick);
 
     // -- INICIALIZAR LA CARGA DE CRÉDITOS --
     fetchCreditos();
