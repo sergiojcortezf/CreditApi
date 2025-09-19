@@ -53,42 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // -- FUNCIÓN PARA AÑADIR UN NUEVO CRÉDITO --
-    const addCredito = async (event) => {
-        // Prevenir el envío del formulario
-        event.preventDefault();
-
-        // Obtener los datos del formulario
-        const formData = new FormData(creditosForm);
-        const creditoData = {
-            cliente: formData.get('cliente'),
-            monto: parseFloat(formData.get('monto')),
-            tasa_interes: parseFloat(formData.get('tasa_interes')),
-            plazo: parseInt(formData.get('plazo')),
-            fecha_otorgamiento: formData.get('fecha_otorgamiento')
-        };
-
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(creditoData)
-            });
-            if (!response.ok) throw new Error('Error al añadir el crédito');
-
-            // Limpiar el formulario
-            creditosForm.reset();
-
-            // Recargar la lista de créditos
-            fetchCreditos();
-        } catch (error) {
-            console.error('Error al enviar el formulario:', error);
-            alert('Error al añadir el crédito. Por favor, inténtelo de nuevo.');
-        }
-    };
-
     // -- FUNCIÓN PARA RESETAR EL FORMULARIO --
     const resetFormState = () => {
         creditosForm.reset();
