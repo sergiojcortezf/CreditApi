@@ -126,7 +126,7 @@ def update_credito(id):
     return jsonify({'mensaje': f'Crédito con ID {id} actualizado exitosamente'}), 200
 
 # Ruta para obtener estadísticas para la gráfica
-@app.route('/api/reportes/total_creditos', methods=['GET'])
+@app.route('/api/creditos/reportes/total_creditos', methods=['GET'])
 def get_reporte_totales():
     db = get_db()
     cursor = db.execute(
@@ -135,9 +135,10 @@ def get_reporte_totales():
     reporte = cursor.fetchone() # Obtenemos la única fila del resultado
 
     # Convertimos a diccionario
+    # Versión más robusta
     resultado = {
-        'total_creditos': reporte[0] if reporte[0] else 0,
-        'monto_total': reporte[1] if reporte[1] else 0.0
+        'total_creditos': reporte['total_creditos'] if reporte else 0,
+        'monto_total': reporte['monto_total'] if reporte and reporte['monto_total'] is not None else 0.0
     }
 
     return jsonify(resultado)

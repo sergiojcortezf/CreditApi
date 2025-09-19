@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderChart = async () => {
         try {
-            const response = await fetch('/api/reportes/total_creditos');
+            const response = await fetch('/api/creditos/reportes/total_creditos');
             if (!response.ok) throw new Error('Error al cargar los datos del reporte');
 
             const data = await response.json();
@@ -151,16 +151,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const creditoId = target.dataset.id; // Obtener el ID del crédito a eliminar
 
             if (confirm(`¿Está seguro de que desea eliminar el crédito con ID ${creditoId}?`)) {
-                fetch(`${API_URL}/${creditoId}`, { method: 'DELETE' })
-                    .then(response => {
-                        if (!response.ok) throw new Error('Error al eliminar el crédito');
-                        fetchCreditos();
-                        renderChart();
-                    })
-                    .catch(error => {
-                        console.error('Error al eliminar el crédito:', error);
-                        alert('Error al eliminar el crédito. Por favor, inténtelo de nuevo.');
-                    });
+                try {
+                    const response = await fetch(`${API_URL}/${creditoId}`, { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Error al eliminar el crédito');
+                    fetchCreditos();
+                    renderChart();
+                }
+                catch (error) {
+                    console.error('Error al eliminar el crédito:', error);
+                    alert('Error al eliminar el crédito. Por favor, inténtelo de nuevo.');
+                }
             }
         }
 
