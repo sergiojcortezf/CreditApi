@@ -32,7 +32,7 @@ Sigue estos pasos para ejecutar el proyecto en tu máquina local.
 1.  **Clonar el repositorio:**
 
     ```bash
-    git clone [https://github.com/sergiojcortezf/CreditApi.git](https://github.com/sergiojcortezf/CreditApi.git)
+    git clone https://github.com/sergiojcortezf/CreditApi.git
     cd CreditApi
     ```
 
@@ -46,7 +46,7 @@ Sigue estos pasos para ejecutar el proyecto en tu máquina local.
     source venv/Scripts/activate
 
     # Activar en macOS/Linux
-    # source venv/bin/activate
+    source venv/bin/activate
     ```
 
 3.  **Instalar las dependencias:**

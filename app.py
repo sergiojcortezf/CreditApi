@@ -1,9 +1,17 @@
 import sqlite3
+import os
 from flask import Flask, render_template, g, jsonify, request
 
 
 # -- CONFIGURACION --
 app = Flask(__name__)
+
+# Asegurarse de que la carpeta 'instance' exista
+try:
+    os.makedirs(app.instance_path)
+except OSError:
+    pass
+
 DATABASE = 'instance/creditos.db' # Ruta a la base de datos SQLite
 
 
