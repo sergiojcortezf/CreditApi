@@ -22,7 +22,7 @@ h1, h2 {
     margin-top: 0;
 }
 
-.form-container, .table-container {
+.form-container, .table-container, .chart-container {
     margin-top: 30px;
 }
 
