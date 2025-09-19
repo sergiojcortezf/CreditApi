@@ -53,6 +53,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // -- FUNCIÓN PARA OBTENER DATOS DEL REPORTE Y RENDERIZAR LA GRÁFICA --
+    let myChart = null; // Variable para almacenar la instancia del gráfico
+
+    const renderChart = async () => {
+        try {
+            const response = await fetch('/api/reportes/total_creditos');
+            if (!response.ok) throw new Error('Error al cargar los datos del reporte');
+
+            const data = await response.json();
+
+            const ctx = document.getElementById('creditsChart').getContext('2d');
+
+            // Si ya existe un gráfico, destruirlo antes de crear uno nuevo
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Créditos', 'Monto Total($)'],
+                    datasets: [{
+                        label: 'Resumen Finaciero',
+                        data: [data.total_creditos, data.monto_total],
+                        backgroundColor: ['#4CAF50', '#2196F3'],
+                        borderColor: ['#388E3C', '#1976D2'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: true,
+                }
+            });
+        } catch (error) {
+            console.error('Error al renderizar la gráfica:', error);
+        }
+    };
+
     // -- FUNCIÓN PARA RESETAR EL FORMULARIO --
     const resetFormState = () => {
         creditosForm.reset();
@@ -92,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             resetFormState();
             fetchCreditos();
+            renderChart();
         } catch (error) {
             console.error('Error al enviar el formulario:', error);
             alert('Error al guardar el crédito. Por favor, inténtelo de nuevo.');
@@ -111,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     .then(response => {
                         if (!response.ok) throw new Error('Error al eliminar el crédito');
                         fetchCreditos();
+                        renderChart();
                     })
                     .catch(error => {
                         console.error('Error al eliminar el crédito:', error);
@@ -146,5 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // -- INICIALIZAR LA CARGA DE CRÉDITOS --
     fetchCreditos();
+    renderChart();
 
 });
